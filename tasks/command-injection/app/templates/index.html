@@ -1,0 +1,3 @@
+{% extends "base.html" %}{% block title %}Pinger{% endblock %}{% block service %}Pinger{% endblock %}
+{% block body %}<h1>IP Pinger</h1><p class="lead">Диагностика адреса из локальной лабораторной сети.</p>
+<section class="card"><form data-api="/api/pinger"><label>Адрес<input name="ip" value="127.0.0.1" autocomplete="off"></label><button type="submit">Запустить диагностику</button></form><h2>Результат</h2><pre id="result" aria-live="polite">Ожидается диагностика.</pre></section>{% endblock %}

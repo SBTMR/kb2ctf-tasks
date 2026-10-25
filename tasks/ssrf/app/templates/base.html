@@ -1,0 +1,6 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}KB2CTF Web Lab{% endblock %}</title><link rel="stylesheet" href="{{ url_for('static',filename='styles.css') }}">
+<script defer src="{{ url_for('static',filename='forms.js') }}"></script></head>
+<body><header><strong>KB2CTF Web Lab</strong><span>{% block service %}{% endblock %}</span></header>
+<main>{% block body %}{% endblock %}</main><footer>Локальная учебная лаборатория · KB2CTF</footer></body></html>

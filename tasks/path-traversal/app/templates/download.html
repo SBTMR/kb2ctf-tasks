@@ -1,0 +1,4 @@
+{% extends "base.html" %}{% block title %}Burger Storage{% endblock %}{% block service %}Burger Storage{% endblock %}
+{% block body %}<h1>Скачать файл</h1><p class="lead">Файлы вашего Burger Storage.</p><section class="card">{% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
+<form method="get"><label>Имя файла<input name="filename" value="burger.jpg"></label><button type="submit">Скачать</button></form>
+<ul>{% for file in files %}<li><a href="{{ url_for('download_file',filename=file) }}">{{ file }}</a></li>{% endfor %}</ul><div class="actions"><a href="/upload">Загрузить файл</a><a href="/logout">Выйти</a></div></section>{% endblock %}

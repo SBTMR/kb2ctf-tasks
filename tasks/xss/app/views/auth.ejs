@@ -1,0 +1,7 @@
+<%- include('head', {title: mode === 'register' ? 'Регистрация' : 'Вход'}) %>
+<h1><%= mode === 'register' ? 'Создать аккаунт' : 'Добро пожаловать обратно' %></h1><p class="lead">Ваша коллекция мемов начинается здесь.</p>
+<section class="card auth-card"><% if (error) { %><p class="error" role="alert"><%= error %></p><% } %>
+<form method="post"><label>Имя пользователя<input name="username" required maxlength="48" autocomplete="username"></label>
+<label>Пароль<input name="password" type="password" required minlength="8" maxlength="128" autocomplete="<%= mode === 'register' ? 'new-password' : 'current-password' %>"></label>
+<button type="submit"><%= mode === 'register' ? 'Зарегистрироваться' : 'Войти' %></button></form>
+<p><a href="<%= mode === 'register' ? '/login' : '/register' %>"><%= mode === 'register' ? 'Уже есть аккаунт' : 'Создать аккаунт' %></a></p></section><%- include('foot') %>

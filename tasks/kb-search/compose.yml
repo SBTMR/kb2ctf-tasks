@@ -1,0 +1,69 @@
+name: kb2ctf-kb-search-demo
+
+x-common: &common
+  image: kb2ctf/kb-search-demo:local
+  build:
+    context: ..
+    dockerfile: kb-search/Dockerfile
+  init: true
+  user: 10001:10001
+  read_only: true
+  cap_drop: [ALL]
+  security_opt:
+    - no-new-privileges:true
+    - seccomp=../kb-search-bot/seccomp.json
+  pids_limit: 256
+  mem_limit: 768m
+  memswap_limit: 1024m
+  cpus: 1.0
+  shm_size: 128m
+  ulimits:
+    core: {soft: 0, hard: 0}
+    nofile: {soft: 2048, hard: 4096}
+  tmpfs:
+    - /tmp:rw,noexec,nosuid,nodev,size=256m,uid=10001,gid=10001,mode=1770
+  logging:
+    driver: json-file
+    options: {max-size: 5m, max-file: '2'}
+  restart: 'no'
+  stop_grace_period: 30s
+  healthcheck:
+    test: [CMD, node, -e, "fetch('http://127.0.0.1:8080/healthz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+    interval: 5s
+    timeout: 3s
+    retries: 15
+    start_period: 10s
+
+services:
+  search-reflected:
+    <<: *common
+    ports: ['127.0.0.1:${REFLECTED_PORT:-18084}:8080']
+    networks: [reflected_net]
+    environment:
+      MODE: REFLECTED
+      PUBLIC_ORIGIN: http://127.0.0.1:${REFLECTED_PORT:-18084}
+      COOKIE_NAME: ${REFLECTED_COOKIE_NAME:?copy .env.example to .env}
+      SESSION_SECRET: ${REFLECTED_SESSION_SECRET:?demo secret required}
+      DEMO_LOGIN_CODE: ${REFLECTED_DEMO_LOGIN_CODE:?demo login required}
+      DEMO_FLAG: ${REFLECTED_DEMO_FLAG:?demo flag required}
+  search-dom:
+    <<: *common
+    ports: ['127.0.0.1:${DOM_PORT:-18085}:8080']
+    networks: [dom_net]
+    environment:
+      MODE: DOM
+      PUBLIC_ORIGIN: http://127.0.0.1:${DOM_PORT:-18085}
+      COOKIE_NAME: ${DOM_COOKIE_NAME:?copy .env.example to .env}
+      SESSION_SECRET: ${DOM_SESSION_SECRET:?demo secret required}
+      DEMO_LOGIN_CODE: ${DOM_DEMO_LOGIN_CODE:?demo login required}
+      DEMO_FLAG: ${DOM_DEMO_FLAG:?demo flag required}
+
+networks:
+  reflected_net:
+    internal: true
+    enable_ipv6: false
+    driver: bridge
+  dom_net:
+    internal: true
+    enable_ipv6: false
+    driver: bridge

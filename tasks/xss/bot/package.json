@@ -1,0 +1,12 @@
+{
+  "name": "kb2ctf-meme-reader",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "dependencies": {
+    "playwright": "1.64.0"
+  }
+}

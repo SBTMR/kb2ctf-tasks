@@ -1,0 +1,2 @@
+<%- include('head', {title: 'Личный профиль'}) %><h1>Здравствуйте, <%= user.username %></h1><p class="lead">Ваш личный раздел.</p>
+<section class="card"><% if (flag) { %><h2>Личная заметка</h2><pre><%= flag %></pre><% } else { %><h2>Аккаунт участника</h2><p>Публикуйте мемы и обсуждайте их в общей ленте.</p><% } %><a href="/">Открыть ленту</a></section><%- include('foot') %>

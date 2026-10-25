@@ -1,0 +1,13 @@
+**
+!kb-search/
+!kb-search/package.json
+!kb-search/package-lock.json
+!kb-search/lib.js
+!kb-search/server.js
+!kb-search/catalog.json
+!kb-search/static/
+!kb-search/static/**
+!kb-search-bot/
+!kb-search-bot/package.json
+!kb-search-bot/policy.js
+!kb-search-bot/visitor.js

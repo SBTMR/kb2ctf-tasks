@@ -1,0 +1,4 @@
+{% extends "base.html" %}{% block title %}Senior JWT Engineer{% endblock %}{% block service %}Senior JWT Engineer{% endblock %}
+{% block body %}<h1>Senior JWT Engineer</h1><p class="lead">Здравствуйте, {{ username }}.</p><section class="card">
+{% if flag %}<h2>Ваш флаг</h2><pre>{{ flag }}</pre>{% else %}<h2>You are not an admin bebebe!</h2><p>Этот раздел доступен администратору.</p>{% endif %}
+<form method="post" action="/logout"><button class="secondary" type="submit">Выйти</button></form></section>{% endblock %}

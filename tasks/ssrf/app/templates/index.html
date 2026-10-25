@@ -1,0 +1,4 @@
+{% extends "base.html" %}{% block title %}Web Sheriff{% endblock %}{% block service %}Web Sheriff{% endblock %}
+{% block body %}<h1>Web Sheriff</h1><p class="lead">URL Sender: получить страницу с помощью сервера.</p>
+<section class="card"><form data-api="/api/send" data-header-fields="true"><label>URL<input name="url" type="text" value="http://ssrf-sample:8080/"></label>
+<div id="request-headers"></div><div class="actions"><button type="button" class="secondary" id="add-header">Добавить заголовок</button><button type="submit">Отправить</button></div></form><pre id="result" aria-live="polite">Ожидается запрос.</pre></section>{% endblock %}

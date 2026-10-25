@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% block title %}SQL Hunter{% endblock %}{% block service %}SQL Hunter{% endblock %}
+{% block body %}<h1>{{ "Создать аккаунт" if mode=="register" else "Войти" }}</h1><p class="lead">Зарегистрируйтесь и войдите в свой аккаунт.</p>
+<section class="card">{% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
+<form method="post"><label>Имя пользователя<input name="username" required autocomplete="username"></label><label>Пароль<input name="password" type="password" required autocomplete="{{ 'new-password' if mode=='register' else 'current-password' }}"></label><button type="submit">{{ "Зарегистрироваться" if mode=="register" else "Войти" }}</button></form>
+<p><a href="{{ url_for('login' if mode=='register' else 'register') }}">{{ "Уже есть аккаунт" if mode=="register" else "Создать аккаунт" }}</a></p></section>{% endblock %}

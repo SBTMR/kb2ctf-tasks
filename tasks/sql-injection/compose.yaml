@@ -1,0 +1,123 @@
+name: kb2ctf-sql-injection
+services:
+  sql-injection:
+    init: true
+    user: 10001:10001
+    read_only: true
+    logging:
+      driver: json-file
+      options:
+        max-size: 5m
+        max-file: '2'
+    security_opt:
+    - no-new-privileges:true
+    cap_drop:
+    - ALL
+    ulimits:
+      core:
+        soft: 0
+        hard: 0
+      nofile:
+        soft: 2048
+        hard: 4096
+    cgroup_parent: ${KB2CTF_CGROUP_PARENT:-kb2ctf-challenges.slice}
+    pids_limit: 64
+    mem_limit: 256m
+    memswap_limit: 384m
+    cpus: 1.0
+    tmpfs:
+    - /tmp:rw,noexec,nosuid,nodev,size=64m,uid=10001,gid=10001,mode=1770
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+    - 127.0.0.1:8084:8080
+    networks:
+    - sql_front
+    - sql_net
+    depends_on:
+      sql-db:
+        condition: service_healthy
+    healthcheck:
+      test:
+      - CMD
+      - python
+      - -c
+      - import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/healthz',timeout=2).read()
+      interval: 5s
+      timeout: 3s
+      retries: 15
+      start_period: 10s
+  sql-db:
+    init: true
+    user: 999:999
+    read_only: true
+    logging:
+      driver: json-file
+      options:
+        max-size: 5m
+        max-file: '2'
+    security_opt:
+    - no-new-privileges:true
+    cap_drop:
+    - ALL
+    ulimits:
+      core:
+        soft: 0
+        hard: 0
+      nofile:
+        soft: 2048
+        hard: 4096
+    cgroup_parent: ${KB2CTF_CGROUP_PARENT:-kb2ctf-challenges.slice}
+    pids_limit: 64
+    mem_limit: 384m
+    memswap_limit: 512m
+    cpus: 1.0
+    tmpfs:
+    - /tmp:rw,noexec,nosuid,nodev,size=32m,uid=999,gid=999,mode=1770
+    - /var/run/postgresql:rw,noexec,nosuid,nodev,size=16m,uid=999,gid=999,mode=3770
+    build:
+      context: .
+      dockerfile: db/Dockerfile
+    networks:
+    - sql_net
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: kb2ctf
+    volumes:
+    - sql_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+      - CMD
+      - pg_isready
+      - -h
+      - 127.0.0.1
+      - -U
+      - postgres
+      - -d
+      - kb2ctf
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 15s
+networks:
+  sql_front:
+    ipam:
+      config:
+      - subnet: ${KB2CTF_IPV4_PREFIX:-10.203}.7.0/24
+    name: ${COMPOSE_PROJECT_NAME}_sql_front_isolated
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: ${KB2CTF_BRIDGE_PREFIX:-kbctf}-sqlweb
+  sql_net:
+    ipam:
+      config:
+      - subnet: ${KB2CTF_IPV4_PREFIX:-10.203}.8.0/24
+    name: ${COMPOSE_PROJECT_NAME}_sql_net_isolated
+    internal: true
+    driver_opts:
+      com.docker.network.bridge.name: ${KB2CTF_BRIDGE_PREFIX:-kbctf}-sqlpriv
+volumes:
+  sql_data:
+    external: true
+    name: ${KB2CTF_VOLUME_PREFIX:-kb2ctf}-sql-bounded

@@ -1,0 +1,3 @@
+{% extends "base.html" %}{% block title %}Burger Storage{% endblock %}{% block service %}Burger Storage{% endblock %}
+{% block body %}<h1>Burger Storage</h1><p class="lead">Загрузите файл в своё хранилище.</p><section class="card">{% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
+<form method="post" enctype="multipart/form-data"><label>Файл<input name="file" type="file"></label><button type="submit">Загрузить</button></form><div class="actions"><a href="/download">Скачать файл</a><a href="/logout">Выйти</a></div></section>{% endblock %}

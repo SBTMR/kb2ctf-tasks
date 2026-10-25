@@ -1,0 +1,3 @@
+{% extends "base.html" %}{% block title %}SQL Hunter{% endblock %}{% block service %}SQL Hunter{% endblock %}
+{% block body %}<h1>Welcome, {{ username }}!</h1><p class="lead">Ваши личные заметки.</p><section class="card"><h2>Notes</h2>{% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
+{% for note in notes %}<p>{{ note }}</p>{% else %}<p class="muted">Заметок пока нет.</p>{% endfor %}<form method="post" action="/logout"><button type="submit" class="secondary">Выйти</button></form></section>{% endblock %}

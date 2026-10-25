@@ -1,0 +1,109 @@
+name: kb2ctf-xss
+services:
+  xss:
+    init: true
+    user: 10001:10001
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+    - 127.0.0.1:8083:8080
+    networks:
+    - xss_net
+    read_only: true
+    logging:
+      driver: json-file
+      options:
+        max-size: 5m
+        max-file: '2'
+    cap_drop:
+    - ALL
+    security_opt:
+    - no-new-privileges:true
+    ulimits:
+      core:
+        soft: 0
+        hard: 0
+      nofile:
+        soft: 2048
+        hard: 4096
+    cgroup_parent: ${KB2CTF_CGROUP_PARENT:-kb2ctf-challenges.slice}
+    pids_limit: 64
+    mem_limit: 256m
+    memswap_limit: 384m
+    cpus: 1.0
+    tmpfs:
+    - /tmp:rw,noexec,nosuid,nodev,size=32m,uid=10001,gid=10001,mode=1770
+    volumes:
+    - xss_data:/var/lib/lab/xss
+    healthcheck:
+      test:
+      - CMD
+      - node
+      - -e
+      - fetch('http://127.0.0.1:8080/healthz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))
+      interval: 5s
+      timeout: 3s
+      retries: 15
+      start_period: 10s
+  xss-bot:
+    user: 10001:10001
+    build:
+      context: .
+      dockerfile: Bot.Dockerfile
+    depends_on:
+      xss:
+        condition: service_healthy
+    networks:
+    - xss_net
+    environment:
+      FORUM_ORIGIN: http://xss:8080
+    init: true
+    read_only: true
+    logging:
+      driver: json-file
+      options:
+        max-size: 5m
+        max-file: '2'
+    cap_drop:
+    - ALL
+    security_opt:
+    - no-new-privileges:true
+    - seccomp=./bot/seccomp.json
+    ulimits:
+      core:
+        soft: 0
+        hard: 0
+      nofile:
+        soft: 2048
+        hard: 4096
+    cgroup_parent: ${KB2CTF_CGROUP_PARENT:-kb2ctf-challenges.slice}
+    pids_limit: 256
+    mem_limit: 768m
+    memswap_limit: 1024m
+    cpus: 1.0
+    shm_size: 128m
+    tmpfs:
+    - /tmp:rw,noexec,nosuid,nodev,size=256m,uid=10001,gid=10001,mode=1770
+    healthcheck:
+      test:
+      - CMD
+      - node
+      - /app/bot/health.js
+      interval: 5s
+      timeout: 3s
+      retries: 15
+      start_period: 30s
+networks:
+  xss_net:
+    ipam:
+      config:
+      - subnet: ${KB2CTF_IPV4_PREFIX:-10.203}.11.0/24
+    name: ${COMPOSE_PROJECT_NAME}_xss_net_isolated
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: ${KB2CTF_BRIDGE_PREFIX:-kbctf}-xss
+volumes:
+  xss_data:
+    external: true
+    name: ${KB2CTF_VOLUME_PREFIX:-kb2ctf}-xss-bounded

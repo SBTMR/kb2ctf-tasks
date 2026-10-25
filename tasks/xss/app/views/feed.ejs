@@ -1,0 +1,17 @@
+<%- include('head', {title: 'Лента мемов'}) %>
+<h1>Мемы, которые мы заслужили</h1><p class="lead">Один форум. Хорошие мемы. Иногда очень серьёзные комментарии.</p>
+<p class="muted">Наш читатель meme-reader заглядывает в ленту каждые 7 секунд.</p>
+<% if (error) { %><p class="error" role="alert"><%= error %></p><% } %>
+<% if (user) { %><section class="card"><h2>Новый мем</h2><div class="meme-gallery"><% memes.forEach(meme => { %>
+<figure><img src="/assets/memes/<%= meme.file %>" alt="<%= meme.title %>" width="<%= meme.width %>" height="<%= meme.height %>"><figcaption><%= meme.title %></figcaption></figure><% }); %></div>
+<form method="post" action="/posts"><label>Картинка<select name="memeId"><% memes.forEach(meme => { %><option value="<%= meme.id %>"><%= meme.title %></option><% }); %></select></label>
+<label>Подпись мема<textarea name="caption" required maxlength="2000" placeholder="Есть что добавить?"></textarea></label><button type="submit">Опубликовать мем</button></form></section>
+<% } else { %><section class="card"><h2>Присоединяйтесь</h2><p>Войдите, чтобы публиковать мемы и оставлять комментарии.</p><a class="button" href="/register">Создать аккаунт</a></section><% } %>
+<section aria-label="Лента мемов"><% posts.forEach(post => { %><article class="card feed-post" id="post-<%= post.id %>">
+<p class="post-meta"><strong><%= post.author %></strong> · <time datetime="<%= post.createdAt %>"><%= post.createdAt.slice(0,16).replace('T',' ') %></time></p>
+<img class="meme-image" src="/assets/memes/<%= post.meme.file %>" alt="<%= post.meme.title %>" width="<%= post.meme.width %>" height="<%= post.meme.height %>">
+<%- include('rich', {content: post.caption}) %>
+<section class="comments"><h2>Комментарии · <%= post.comments.length %></h2><% post.comments.forEach(comment => { %>
+<div class="comment"><strong><%= comment.author %></strong><%- include('rich', {content: comment.body}) %></div><% }); %>
+<% if (user) { %><form method="post" action="/posts/<%= post.id %>/comments"><label>Комментарий<textarea name="body" required maxlength="2000"></textarea></label><button type="submit" class="secondary">Отправить комментарий</button></form><% } %></section>
+</article><% }); %></section><%- include('foot') %>

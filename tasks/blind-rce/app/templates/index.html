@@ -1,0 +1,3 @@
+{% extends "base.html" %}{% block title %}Pinger Deluxe Edition{% endblock %}{% block service %}Pinger Deluxe Edition{% endblock %}
+{% block body %}<h1>IP Pinger Deluxe (Big burger)</h1><p class="lead">Введите IP-адрес для проверки доступности.</p>
+<section class="card"><form data-api="/api/pinger"><label>Адрес<input type="text" name="ip" placeholder="Введите IP-адрес" autocomplete="off"></label><button type="submit">Ping</button></form><pre id="result" aria-live="polite"></pre></section>{% endblock %}

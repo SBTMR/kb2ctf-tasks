@@ -1,0 +1,8 @@
+{
+  "name": "kb2ctf-search-demo",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {"start": "node server.js", "test": "node --test test/*.test.js ../kb-search-bot/test/*.test.js"},
+  "dependencies": {"playwright":"1.64.0"}
+}

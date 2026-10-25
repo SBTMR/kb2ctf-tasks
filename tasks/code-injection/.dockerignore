@@ -1,0 +1,8 @@
+.git
+**/node_modules
+**/__pycache__
+**/*.pyc
+tests
+flag.txt
+*-password.txt
+session-key.txt

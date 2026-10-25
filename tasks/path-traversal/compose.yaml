@@ -1,0 +1,61 @@
+name: kb2ctf-path-traversal
+services:
+  path-traversal:
+    init: true
+    user: 10001:10001
+    read_only: true
+    logging:
+      driver: json-file
+      options:
+        max-size: 5m
+        max-file: '2'
+    security_opt:
+    - no-new-privileges:true
+    cap_drop:
+    - ALL
+    ulimits:
+      core:
+        soft: 0
+        hard: 0
+      nofile:
+        soft: 2048
+        hard: 4096
+    cgroup_parent: ${KB2CTF_CGROUP_PARENT:-kb2ctf-challenges.slice}
+    pids_limit: 64
+    mem_limit: 256m
+    memswap_limit: 384m
+    cpus: 1.0
+    tmpfs:
+    - /tmp:rw,noexec,nosuid,nodev,size=64m,uid=10001,gid=10001,mode=1770
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+    - 127.0.0.1:8085:8080
+    networks:
+    - storage_net
+    volumes:
+    - storage_data:/var/lib/lab/storage
+    healthcheck:
+      test:
+      - CMD
+      - python
+      - -c
+      - import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/healthz',timeout=2).read()
+      interval: 5s
+      timeout: 3s
+      retries: 15
+      start_period: 10s
+networks:
+  storage_net:
+    ipam:
+      config:
+      - subnet: ${KB2CTF_IPV4_PREFIX:-10.203}.6.0/24
+    name: ${COMPOSE_PROJECT_NAME}_storage_net_isolated
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: ${KB2CTF_BRIDGE_PREFIX:-kbctf}-storage
+volumes:
+  storage_data:
+    external: true
+    name: ${KB2CTF_VOLUME_PREFIX:-kb2ctf}-storage-bounded

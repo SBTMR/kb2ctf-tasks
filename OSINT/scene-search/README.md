@@ -137,15 +137,6 @@ scene-search/
 
 CSV открывается табличным редактором, GeoJSON можно открыть в QGIS. Проект `.qgs` этот минимальный комплект не создаёт. В консоли показываются первые 20 сочетаний, в файлы сохраняются все.
 
-## 6. Что хранить в Git
-
-Коммить только два `.py`, `requirements.txt`, `README.md` и `.gitignore`. Карта, её архивы, `.venv` и результаты работы исключены через `.gitignore`. Для проверки после добавления файлов:
-
-```powershell
-git status --short
-git diff --cached --stat
-```
-
-Если Git показывает карту как уже отслеживаемую, `.gitignore` не удалит её из истории или индекса автоматически. В подготовленной папке базы нет и она не добавлялась в Git.
+## Источники данных
 
 Исходные геоданные: © [OpenStreetMap contributors](https://www.openstreetmap.org/copyright), [ODbL](https://opendatacommons.org/licenses/odbl/1-0/). Выгрузка: [Geofabrik](https://download.geofabrik.de/russia.html).

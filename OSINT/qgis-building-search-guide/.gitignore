@@ -1,0 +1,12 @@
+# Локальные карты и результаты обработки
+*.gpkg
+*.gpkg-*
+*.osm
+*.pbf
+*.qgs
+*.qgz
+*.qgd
+*.qgs~
+*.qgz~
+work/
+data/

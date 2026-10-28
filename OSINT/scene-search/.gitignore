@@ -1,0 +1,31 @@
+# Local map data and their archives
+*.gpkg
+*.gpkg-*
+*.gpkg.*
+*.pbf
+*.pbf.*
+*.osm
+*.osm.*
+russia*.zip
+russia*.7z
+
+# Python environment and cache
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# Generated search results and logs
+results/
+results_*/
+output/
+outputs/
+bench_runs/
+.roof_run_*/
+*.geojson
+*.csv
+*.log
+summary.json
+scene_search.qgs
+scene_search.qgz
+first_candidate.png
